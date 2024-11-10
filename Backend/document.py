@@ -6,6 +6,10 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from sklearn.cluster import DBSCAN
 import numpy as np
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urlparse
+
 nltk.download('wordnet')
 nltk.download('punkt')
 nltk.download('words')
@@ -40,15 +44,40 @@ def getMetadata(url):
     else:
         print(f'Error: {response.status_code} - {response.text}')
 
+def scrape_metadata(url):
+    try:
+        response = requests.get(url)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        # Extract domain
+        domain = urlparse(url).netloc
+        
+        # Extract title
+        title = soup.title.string if soup.title else 'No Title'
+        
+        # Extract meta description
+        meta_description = ''
+        meta_tag = soup.find('meta', attrs={'name': 'description'})
+        if meta_tag:
+            meta_description = meta_tag.get('content', '')
+        
+        return domain, title, meta_description
+    except Exception as e:
+        print(f"Error scraping {url}: {str(e)}")
+        return None, None, None
+
 def createDoc(url):
-    scraped_text = scrape_content(url)
-    summary = summarize_with_sumy(scraped_text)
-    document = getMetadata(url)
+    # scraped_text = scrape_content(url)
+    # summary = summarize_with_sumy(scraped_text)
+    # document = getMetadata(url)
+    document = {}
+    domain, title, description = scrape_metadata(url)
     document['url'] = url
-    document['summary'] = summary
-    document['title'] = preprocess(document['title'])
-    document['description'] = preprocess(document['description'])
-    out = document['title'] + ' ' + document['description'] + ' ' + document['summary']
+    document['domain'] = domain
+    # document['summary'] = summary
+    document['title'] = preprocess(title)
+    document['description'] = preprocess(description)
+    out = document['title'] + ' ' + document['description'] #+ ' ' + document['summary']
     return out, document
 
 if __name__ == "__main__":
