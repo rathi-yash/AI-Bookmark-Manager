@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { Search, Add } from '@mui/icons-material';
 
-const SearchBar = ({ addBookmark }) => {
+const SearchBar = ({ addBookmark, onSearch }) => {
   const [open, setOpen] = useState(false);
   const [newBookmark, setNewBookmark] = useState({
     title: '',
@@ -20,86 +20,98 @@ const SearchBar = ({ addBookmark }) => {
     tags: '',
     url: '',
   });
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // Open/Close modal
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewBookmark({ ...newBookmark, [name]: value });
   };
 
-  // Handle form submission
   const handleSubmit = () => {
     if (newBookmark.title && newBookmark.url) {
       addBookmark({
         ...newBookmark,
-        tags: newBookmark.tags.split(',').map((tag) => tag.trim()), // Split tags by commas
+        tags: newBookmark.tags.split(',').map((tag) => tag.trim()),
       });
-      handleClose(); // Close modal after submission
+      handleClose();
     }
+  };
+
+  const handleSearch = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    onSearch(query);
   };
 
   return (
     <>
-      <Box display="flex" justifyContent="space-between" alignItems="center" my={2}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
         <TextField
+          label="Search"
           variant="outlined"
-          placeholder="Search"
+          fullWidth
+          value={searchQuery}
+          onChange={handleSearch}
           InputProps={{
             startAdornment: <Search />,
           }}
           sx={{ width: '40%' }}
         />
-        <Box display="flex" alignItems="center">
-          <FormControlLabel control={<Checkbox defaultChecked />} label="Only unread" />
-          <FormControlLabel control={<Checkbox />} label="Only flagged" />
-          <Button variant="contained" startIcon={<Add />} sx={{ ml: 2 }} onClick={handleClickOpen}>
-            Add Bookmark
-          </Button>
-        </Box>
+        <FormControlLabel control={<Checkbox />} label="Only unread" />
+        <FormControlLabel control={<Checkbox />} label="Only flagged" />
+        <Button
+          variant="contained"
+          startIcon={<Add />}
+          sx={{ ml: 2 }}
+          onClick={handleClickOpen}
+        >
+          Add Bookmark
+        </Button>
       </Box>
-
-      {/* Add Bookmark Modal */}
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Add New Bookmark</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
+            name="title"
             label="Title"
             type="text"
             fullWidth
-            name="title"
+            variant="standard"
             value={newBookmark.title}
             onChange={handleChange}
           />
           <TextField
             margin="dense"
+            name="description"
             label="Description"
             type="text"
             fullWidth
-            name="description"
+            variant="standard"
             value={newBookmark.description}
             onChange={handleChange}
           />
           <TextField
             margin="dense"
+            name="tags"
             label="Tags (comma-separated)"
             type="text"
             fullWidth
-            name="tags"
+            variant="standard"
             value={newBookmark.tags}
             onChange={handleChange}
           />
           <TextField
             margin="dense"
+            name="url"
             label="URL"
             type="url"
             fullWidth
-            name="url"
+            variant="standard"
             value={newBookmark.url}
             onChange={handleChange}
           />

@@ -24,46 +24,52 @@ function App() {
       url: 'https://svelte-french-toast.com',
     },
   ]);
-
   const [editingBookmark, setEditingBookmark] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // Function to add a new bookmark
   const addBookmark = (newBookmark) => {
     setBookmarks([...bookmarks, { ...newBookmark, id: Date.now() }]);
   };
 
-  // Function to update an existing bookmark
   const updateBookmark = (updatedBookmark) => {
     setBookmarks(
       bookmarks.map((bookmark) =>
         bookmark.id === updatedBookmark.id ? updatedBookmark : bookmark
       )
     );
-    setEditingBookmark(null); // Close edit modal after updating
+    setEditingBookmark(null);
   };
 
+  const filteredBookmarks = bookmarks.filter((bookmark) =>
+    bookmark.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    bookmark.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    bookmark.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
   return (
-    <Box>
+    <>
       <CssBaseline />
       <Container maxWidth="lg">
-        <Typography variant="h4" component="h1" gutterBottom>
-          grimoire
-        </Typography>
-        <SearchBar addBookmark={addBookmark} />
-        <FilterBar />
-        <BookmarkList
-          bookmarks={bookmarks}
-          onEdit={(bookmark) => setEditingBookmark(bookmark)}
-        />
-        {editingBookmark && (
-          <EditBookmarkModal
-            bookmark={editingBookmark}
-            onSave={updateBookmark}
-            onClose={() => setEditingBookmark(null)}
+        <Box sx={{ my: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Grimoire
+          </Typography>
+          <SearchBar addBookmark={addBookmark} onSearch={setSearchQuery} />
+          <FilterBar />
+          <BookmarkList
+            bookmarks={filteredBookmarks}
+            onEdit={(bookmark) => setEditingBookmark(bookmark)}
           />
-        )}
+          {editingBookmark && (
+            <EditBookmarkModal
+              bookmark={editingBookmark}
+              onSave={updateBookmark}
+              onClose={() => setEditingBookmark(null)}
+            />
+          )}
+        </Box>
       </Container>
-    </Box>
+    </>
   );
 }
 
