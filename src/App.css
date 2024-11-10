@@ -1,5 +1,5 @@
 body {
-  background-color: #F2EFE8;
+  background-color: #D3D9D4;
   margin: 0;
   padding: 0;
 }
@@ -27,7 +27,7 @@ body {
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: #F2EFE8;
+  color: #D3D9D4;
 }
 
 .App-link {

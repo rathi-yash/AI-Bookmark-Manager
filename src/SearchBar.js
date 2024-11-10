@@ -66,6 +66,7 @@ const SearchBar = ({ addBookmark, onSearch }) => {
           fullWidth
           value={searchQuery}
           onChange={handleSearch}
+          placeholder="Search for bookmarks" // Add placeholder here
           InputProps={{
             startAdornment: <Search />,
           }}
@@ -75,6 +76,7 @@ const SearchBar = ({ addBookmark, onSearch }) => {
           variant="contained"
           startIcon={<Add />}
           onClick={handleClickOpen}
+          sx={{ backgroundColor: '#124E66', '&:hover': { backgroundColor: '#124E66' } }} // Change color to brown
         >
           Add Bookmark
         </Button>

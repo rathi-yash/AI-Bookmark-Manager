@@ -52,12 +52,27 @@ const BookmarkCard = ({ id, title, urls, onEdit, onDelete, onDragStart, onDragOv
         '&:active': {
           transform: 'scale(0.95)',
         },
+        paddingRight: '16px', // Add right padding here
       }}
     >
       <CardContent>
-        <Typography variant="h6" component="div" gutterBottom>
+        {/* Title with Bold Font, Larger Size, and Center Alignment */}
+        <Typography 
+          variant="h6" 
+          component="div" 
+          gutterBottom 
+          sx={{
+            paddingRight: '16px', // Add right padding
+            wordBreak: 'break-word', // Ensure long text wraps
+            fontSize: '1.5rem', // Increase font size
+            fontWeight: 'bold', // Make font bold
+            textAlign: 'center', // Center align the title
+          }}
+        >
           {title}
         </Typography>
+
+        {/* List of URLs */}
         <List dense>
           {urls.map((url, index) => (
             <ListItem 
@@ -74,6 +89,15 @@ const BookmarkCard = ({ id, title, urls, onEdit, onDelete, onDragStart, onDragOv
                     href={url} 
                     target="_blank" 
                     rel="noopener noreferrer" 
+                    sx={{
+                      wordBreak: 'break-word', // Ensure URLs wrap properly
+                      paddingRight: '16px', // Add right padding for URLs as well
+                      color: 'black', // Change link color to black
+                      textDecoration: 'none', // Remove underline from links
+                      '&:hover': {
+                        textDecoration: 'underline', // Optional hover effect for links
+                      },
+                    }}
                     onClick={(e) => e.stopPropagation()}
                   >
                     {url}
@@ -84,6 +108,8 @@ const BookmarkCard = ({ id, title, urls, onEdit, onDelete, onDragStart, onDragOv
           ))}
         </List>
       </CardContent>
+
+      {/* Actions */}
       <CardActions>
         <IconButton 
           aria-label="edit" 

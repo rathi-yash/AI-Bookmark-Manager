@@ -98,7 +98,7 @@ function App() {
   );
 
   return (
-    <div style={{ backgroundColor: '#F2EFE8', minHeight: '100vh', paddingTop: '20px' }}>
+    <div style={{ backgroundColor: '#D3D9D4', minHeight: '100vh', paddingTop: '20px' }}>
       <CssBaseline />
       <Container maxWidth="lg">
         <Box sx={{ my: 4 }}>
