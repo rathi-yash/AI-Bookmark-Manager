@@ -1,0 +1,18 @@
+{
+    "manifest_version": 2,
+    "name": "MindVault",
+    "version": "1.0",
+    "description": "A simple note-taking extension for Chrome",
+    "permissions": ["storage", "bookmarks", "notifications", "https://your-server.com/"],
+    "browser_action": {
+      "default_popup": "popup.html",
+      "default_icon": "icon.png"
+    },
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    },
+    "icons": {
+      "48": "icon.png"
+    }
+  }
