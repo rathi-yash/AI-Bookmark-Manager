@@ -12,9 +12,9 @@ existing_documents = [
 ]
 
 doc_obj = [
-    {'title': 'Document 1', 'description': 'abstract page paper Document 1', 'domain': 'arxiv.org', 'summary': 'skip main gratefully acknowledge support author navigation instrumentation ultraviole...r contact accessibility operational status', 'url': 'abc.com'},
-    {'title': 'Document 2', 'description': 'abstract page paper Document 2', 'domain': 'arxiv.org', 'summary': 'skip main gratefully acknowledge support author navigation instrumentation ultraviole...r contact accessibility operational status', 'url': 'abc.com'},
-    {'title': 'Document 3', 'description': 'abstract page paper Document 3', 'domain': 'arxiv.org', 'summary': 'skip main gratefully acknowledge support author navigation instrumentation ultraviole...r contact accessibility operational status', 'url': 'abc.com'}
+    {'title': 'Document 1', 'description': 'abstract page paper Document 1', 'domain': 'arxiv.org', 'summary': 'skip main gratefully acknowledge support author navigation instrumentation ultraviole...r contact accessibility operational status', 'url': 'abc1.com'},
+    {'title': 'Document 2', 'description': 'abstract page paper Document 2', 'domain': 'arxiv.org', 'summary': 'skip main gratefully acknowledge support author navigation instrumentation ultraviole...r contact accessibility operational status', 'url': 'abc2.com'},
+    {'title': 'Document 3', 'description': 'abstract page paper Document 3', 'domain': 'arxiv.org', 'summary': 'skip main gratefully acknowledge support author navigation instrumentation ultraviole...r contact accessibility operational status', 'url': 'abc3.com'}
 ]
 
 def dynamic_clustering(embeddings, eps=0.3, min_samples=1):
