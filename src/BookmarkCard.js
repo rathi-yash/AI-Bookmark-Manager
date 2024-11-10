@@ -9,9 +9,9 @@ import {
   ListItem,
   ListItemText,
 } from '@mui/material';
-import { Edit } from '@mui/icons-material';
+import { Edit, Delete } from '@mui/icons-material';
 
-const BookmarkCard = ({ title, urls, onEdit, onDragStart, onDragOver, onDrop }) => {
+const BookmarkCard = ({ id, title, urls, onEdit, onDelete, onDragStart, onDragOver, onDrop }) => {
   
   const handleClick = () => {
     const newWindow = window.open('', '_blank');
@@ -43,7 +43,7 @@ const BookmarkCard = ({ title, urls, onEdit, onDragStart, onDragOver, onDrop }) 
     <Card
       onClick={handleClick}
       onDragOver={onDragOver}
-      onDrop={onDrop}
+      onDrop={(e) => onDrop(e, id)}
       sx={{
         transition: 'transform 0.2s ease-in-out',
         '&:hover': {
@@ -85,8 +85,23 @@ const BookmarkCard = ({ title, urls, onEdit, onDragStart, onDragOver, onDrop }) 
         </List>
       </CardContent>
       <CardActions>
-        <IconButton aria-label="edit" onClick={(e) => { e.stopPropagation(); onEdit(); }}>
+        <IconButton 
+          aria-label="edit" 
+          onClick={(e) => { 
+            e.stopPropagation(); 
+            onEdit(); 
+          }}
+        >
           <Edit />
+        </IconButton>
+        <IconButton 
+          aria-label="delete" 
+          onClick={(e) => { 
+            e.stopPropagation(); 
+            onDelete(id); 
+          }}
+        >
+          <Delete />
         </IconButton>
       </CardActions>
     </Card>

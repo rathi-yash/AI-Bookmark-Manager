@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Box, CssBaseline, Container, Typography } from '@mui/material';
 import axios from 'axios';
 import SearchBar from './SearchBar';
 import BookmarkList from './BookmarkList';
 import FilterBar from './FilterBar';
 import EditBookmarkModal from './EditBookmarkModal';
+import { Box, CssBaseline, Container } from '@mui/material';
+import logo from "./Pictures/Logo.jpg";
+import './App.css';
 
 function App() {
   const [bookmarks, setBookmarks] = useState([]);
@@ -63,6 +65,10 @@ function App() {
     setEditingBookmark(null);
   };
 
+  const deleteBookmark = (bookmarkId) => {
+    setBookmarks(prevBookmarks => prevBookmarks.filter(bookmark => bookmark.id !== bookmarkId));
+  };
+
   const handleDragStart = (e, url) => {
     e.dataTransfer.setData('text/plain', url);
   };
@@ -92,18 +98,19 @@ function App() {
   );
 
   return (
-    <>
+    <div style={{ backgroundColor: '#F2EFE8', minHeight: '100vh', paddingTop: '20px' }}>
       <CssBaseline />
       <Container maxWidth="lg">
         <Box sx={{ my: 4 }}>
-          <Typography variant="h4" component="h1" gutterBottom>
-            MindVault
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+            <img src={logo} alt="MindVault Logo" style={{ height: '100px' }} />
+          </Box>
           <SearchBar addBookmark={addBookmark} onSearch={setSearchQuery} />
           <FilterBar />
           <BookmarkList
             bookmarks={filteredBookmarks}
             onEdit={(bookmark) => setEditingBookmark(bookmark)}
+            onDelete={deleteBookmark}
             onDragStart={handleDragStart}
             onDragOver={handleDragOver}
             onDrop={handleDrop}
@@ -117,7 +124,7 @@ function App() {
           )}
         </Box>
       </Container>
-    </>
+    </div>
   );
 }
 
