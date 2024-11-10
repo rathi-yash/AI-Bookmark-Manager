@@ -3,8 +3,6 @@ import {
   Box,
   TextField,
   Button,
-  Checkbox,
-  FormControlLabel,
   Dialog,
   DialogActions,
   DialogContent,
@@ -16,9 +14,7 @@ const SearchBar = ({ addBookmark, onSearch }) => {
   const [open, setOpen] = useState(false);
   const [newBookmark, setNewBookmark] = useState({
     title: '',
-    description: '',
-    tags: '',
-    url: '',
+    urls: [''],
   });
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -30,11 +26,26 @@ const SearchBar = ({ addBookmark, onSearch }) => {
     setNewBookmark({ ...newBookmark, [name]: value });
   };
 
+  const handleUrlChange = (index, value) => {
+    const updatedUrls = [...newBookmark.urls];
+    updatedUrls[index] = value;
+    setNewBookmark({ ...newBookmark, urls: updatedUrls });
+  };
+
+  const addUrlField = () => {
+    setNewBookmark({ ...newBookmark, urls: [...newBookmark.urls, ''] });
+  };
+
+  const removeUrlField = (index) => {
+    const updatedUrls = newBookmark.urls.filter((_, i) => i !== index);
+    setNewBookmark({ ...newBookmark, urls: updatedUrls });
+  };
+
   const handleSubmit = () => {
-    if (newBookmark.title && newBookmark.url) {
+    if (newBookmark.title && newBookmark.urls.some(url => url.trim() !== '')) {
       addBookmark({
         ...newBookmark,
-        tags: newBookmark.tags.split(',').map((tag) => tag.trim()),
+        urls: newBookmark.urls.filter(url => url.trim() !== ''),
       });
       handleClose();
     }
@@ -58,14 +69,11 @@ const SearchBar = ({ addBookmark, onSearch }) => {
           InputProps={{
             startAdornment: <Search />,
           }}
-          sx={{ width: '40%' }}
+          sx={{ flexGrow: 1, mr: 2 }}
         />
-        <FormControlLabel control={<Checkbox />} label="Only unread" />
-        <FormControlLabel control={<Checkbox />} label="Only flagged" />
         <Button
           variant="contained"
           startIcon={<Add />}
-          sx={{ ml: 2 }}
           onClick={handleClickOpen}
         >
           Add Bookmark
@@ -85,36 +93,21 @@ const SearchBar = ({ addBookmark, onSearch }) => {
             value={newBookmark.title}
             onChange={handleChange}
           />
-          <TextField
-            margin="dense"
-            name="description"
-            label="Description"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={newBookmark.description}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            name="tags"
-            label="Tags (comma-separated)"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={newBookmark.tags}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            name="url"
-            label="URL"
-            type="url"
-            fullWidth
-            variant="standard"
-            value={newBookmark.url}
-            onChange={handleChange}
-          />
+          {newBookmark.urls.map((url, index) => (
+            <Box key={index} sx={{ display: 'flex', alignItems: 'center' }}>
+              <TextField
+                margin="dense"
+                label={`URL ${index + 1}`}
+                type="url"
+                fullWidth
+                variant="standard"
+                value={url}
+                onChange={(e) => handleUrlChange(index, e.target.value)}
+              />
+              <Button onClick={() => removeUrlField(index)}>Remove</Button>
+            </Box>
+          ))}
+          <Button onClick={addUrlField}>Add URL</Button>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>

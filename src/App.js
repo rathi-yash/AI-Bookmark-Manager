@@ -13,7 +13,7 @@ function App() {
       description:
         'Tailwind CSS is a utility-first CSS framework for rapidly building modern websites without ever leaving your HTML.',
       tags: ['flex', 'css'],
-      url: 'https://tailwindcss.com',
+      urls: ['https://tailwindcss.com'],
     },
     {
       id: 2,
@@ -21,7 +21,7 @@ function App() {
       description:
         'Buttery smooth toast notifications for Svelte. Lightweight, customizable, and beautiful by default.',
       tags: ['svelte', 'toaster'],
-      url: 'https://svelte-french-toast.com',
+      urls: ['https://svelte-french-toast.com'],
     },
   ]);
   const [editingBookmark, setEditingBookmark] = useState(null);
@@ -40,10 +40,34 @@ function App() {
     setEditingBookmark(null);
   };
 
+  const handleDragStart = (e, url) => {
+    e.dataTransfer.setData('text/plain', url);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e, targetBookmarkId) => {
+    e.preventDefault();
+    const url = e.dataTransfer.getData('text');
+    
+    setBookmarks(bookmarks.map(bookmark => {
+      if (bookmark.id === targetBookmarkId) {
+        return { ...bookmark, urls: [...bookmark.urls, url] };
+      }
+      return {
+        ...bookmark,
+        urls: bookmark.urls.filter(bookmarkUrl => bookmarkUrl !== url)
+      };
+    }));
+  };
+
   const filteredBookmarks = bookmarks.filter((bookmark) =>
     bookmark.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     bookmark.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    bookmark.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+    bookmark.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    bookmark.urls.some(url => url.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (
@@ -59,6 +83,9 @@ function App() {
           <BookmarkList
             bookmarks={filteredBookmarks}
             onEdit={(bookmark) => setEditingBookmark(bookmark)}
+            onDragStart={handleDragStart}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
           />
           {editingBookmark && (
             <EditBookmarkModal

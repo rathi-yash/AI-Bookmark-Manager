@@ -5,54 +5,87 @@ import {
   CardActions,
   Typography,
   IconButton,
-  Chip,
+  List,
+  ListItem,
+  ListItemText,
 } from '@mui/material';
-import { Link, StarBorder, VisibilityOff, Edit } from '@mui/icons-material';
+import { Edit } from '@mui/icons-material';
 
-const BookmarkCard = ({ title, description, tags, url, onEdit }) => {
+const BookmarkCard = ({ title, urls, onEdit, onDragStart, onDragOver, onDrop }) => {
+  
+  const handleClick = () => {
+    const newWindow = window.open('', '_blank');
+    if (newWindow) {
+      newWindow.document.write(`
+        <html>
+          <head>
+            <title>${title}</title>
+            <style>
+              body { font-family: Arial, sans-serif; padding: 20px; }
+              h1 { color: #333; }
+              .url-list { padding-left: 0; list-style-type: none; }
+              .url { word-break: break-all; }
+            </style>
+          </head>
+          <body>
+            <h1>${title}</h1>
+            <ul class="url-list">
+              ${urls.map(url => `<li class="url"><a href="${url}" target="_blank">${url}</a></li>`).join('')}
+            </ul>
+          </body>
+        </html>
+      `);
+      newWindow.document.close();
+    }
+  };
+
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card
+      onClick={handleClick}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      sx={{
+        transition: 'transform 0.2s ease-in-out',
+        '&:hover': {
+          transform: 'scale(1.05)',
+        },
+        '&:active': {
+          transform: 'scale(0.95)',
+        },
+      }}
+    >
       <CardContent>
-        {/* Tag */}
-        <Chip label="UI" color="primary" size="small" sx={{ mb: 1 }} />
-
-        {/* Title */}
-        <Typography gutterBottom variant="h6" component="div">
+        <Typography variant="h6" component="div" gutterBottom>
           {title}
         </Typography>
-
-        {/* Description */}
-        <Typography variant="body2" color="text.secondary">
-          {description}
-        </Typography>
-
-        {/* Tags */}
-        <div style={{ marginTop: '8px' }}>
-          {tags.map((tag) => (
-            <Chip key={tag} label={`#${tag}`} size="small" sx={{ mr: 0.5 }} />
+        <List dense>
+          {urls.map((url, index) => (
+            <ListItem 
+              key={index} 
+              disablePadding
+              draggable
+              onDragStart={(e) => onDragStart(e, url)}
+            >
+              <ListItemText
+                primary={
+                  <Typography 
+                    variant="body2" 
+                    component="a" 
+                    href={url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {url}
+                  </Typography>
+                }
+              />
+            </ListItem>
           ))}
-        </div>
+        </List>
       </CardContent>
-
-      {/* Actions */}
-      <CardActions disableSpacing>
-        {/* Open URL */}
-        <IconButton aria-label="open link" href={url} target="_blank">
-          <Link />
-        </IconButton>
-
-        {/* Star/Flag */}
-        <IconButton aria-label="flag">
-          <StarBorder />
-        </IconButton>
-
-        {/* Hide */}
-        <IconButton aria-label="hide">
-          <VisibilityOff />
-        </IconButton>
-
-        {/* Edit */}
-        <IconButton aria-label="edit" onClick={onEdit}>
+      <CardActions>
+        <IconButton aria-label="edit" onClick={(e) => { e.stopPropagation(); onEdit(); }}>
           <Edit />
         </IconButton>
       </CardActions>
