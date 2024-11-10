@@ -3,6 +3,7 @@ import { Box, CssBaseline, Container, Typography } from '@mui/material';
 import SearchBar from './SearchBar';
 import BookmarkList from './BookmarkList';
 import FilterBar from './FilterBar';
+import EditBookmarkModal from './EditBookmarkModal';
 
 function App() {
   const [bookmarks, setBookmarks] = useState([

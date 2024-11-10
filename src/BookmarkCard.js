@@ -6,11 +6,10 @@ import {
   Typography,
   IconButton,
   Chip,
-  Box // <-- Add this import
 } from '@mui/material';
-import { Link, StarBorder, VisibilityOff } from '@mui/icons-material';
+import { Link, StarBorder, VisibilityOff, Edit } from '@mui/icons-material';
 
-const BookmarkCard = ({ title, description, tags, url }) => {
+const BookmarkCard = ({ title, description, tags, url, onEdit }) => {
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardContent>
@@ -28,11 +27,11 @@ const BookmarkCard = ({ title, description, tags, url }) => {
         </Typography>
 
         {/* Tags */}
-        <Box mt={1}>
+        <div style={{ marginTop: '8px' }}>
           {tags.map((tag) => (
             <Chip key={tag} label={`#${tag}`} size="small" sx={{ mr: 0.5 }} />
           ))}
-        </Box>
+        </div>
       </CardContent>
 
       {/* Actions */}
@@ -50,6 +49,11 @@ const BookmarkCard = ({ title, description, tags, url }) => {
         {/* Hide */}
         <IconButton aria-label="hide">
           <VisibilityOff />
+        </IconButton>
+
+        {/* Edit */}
+        <IconButton aria-label="edit" onClick={onEdit}>
+          <Edit />
         </IconButton>
       </CardActions>
     </Card>
