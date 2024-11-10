@@ -1,27 +1,31 @@
 import React, { useState } from 'react';
 import {
   Dialog,
-  DialogActions,
-  DialogContent,
   DialogTitle,
+  DialogContent,
   TextField,
+  DialogActions,
   Button,
 } from '@mui/material';
 
 const EditBookmarkModal = ({ bookmark, onSave, onClose }) => {
-  const [updatedBookmark, setUpdatedBookmark] = useState(bookmark);
+  const [updatedBookmark, setUpdatedBookmark] = useState({
+    ...bookmark,
+    urls: Array.isArray(bookmark.urls) ? bookmark.urls : [bookmark.url || ''],
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUpdatedBookmark({ ...updatedBookmark, [name]: value });
   };
 
+  const handleUrlChange = (value) => {
+    setUpdatedBookmark({ ...updatedBookmark, urls: [value] });
+  };
+
   const handleSubmit = () => {
-    if (updatedBookmark.title && updatedBookmark.url) {
-      onSave({
-        ...updatedBookmark,
-        tags: updatedBookmark.tags.split(',').map((tag) => tag.trim()), // Split tags by commas
-      });
+    if (updatedBookmark.title && updatedBookmark.urls.length > 0) {
+      onSave(updatedBookmark);
     }
   };
 
@@ -36,25 +40,7 @@ const EditBookmarkModal = ({ bookmark, onSave, onClose }) => {
           type="text"
           fullWidth
           name="title"
-          value={updatedBookmark.title}
-          onChange={handleChange}
-        />
-        <TextField
-          margin="dense"
-          label="Description"
-          type="text"
-          fullWidth
-          name="description"
-          value={updatedBookmark.description}
-          onChange={handleChange}
-        />
-        <TextField
-          margin="dense"
-          label="Tags (comma-separated)"
-          type="text"
-          fullWidth
-          name="tags"
-          value={updatedBookmark.tags.join(', ')}
+          value={updatedBookmark.title || ''}
           onChange={handleChange}
         />
         <TextField
@@ -63,8 +49,8 @@ const EditBookmarkModal = ({ bookmark, onSave, onClose }) => {
           type="url"
           fullWidth
           name="url"
-          value={updatedBookmark.url}
-          onChange={handleChange}
+          value={updatedBookmark.urls[0] || ''}
+          onChange={(e) => handleUrlChange(e.target.value)}
         />
       </DialogContent>
       <DialogActions>

@@ -6,21 +6,65 @@ from sentence_transformers import SentenceTransformer, util
 from sklearn.manifold import TSNE
 
 existing_documents = [
-    'Document 1: Link - https://example.com/doc1, Metadata - Example Metadata 1, Summary - This is a summary of document 1.',
-    'Document 2: Link - https://example.com/doc2, Metadata - Example Metadata 2, Summary - This is a summary of document 2.',
-    'Document 3: Link - https://example.com/doc3, Metadata - Example Metadata 3, Summary - This is a summary of document 3.',
+    'WNY Jobs - Local jobs for Buffalo NY - Official WNYJOBS site Job posts for Greater Buffalo, NY - Search Manufacturing, Nursing & Healthcare jobs, Human services jobs, Construction jobs in Buffalo',
+    'Job Search: Millions of US Jobs (HIRING NOW) Near You - 2024 Phil, your career advisor will help you find the right job opening from companies hiring in the US. Find job postings near you & 1-click apply to get hired.',
+    'LinkedIn Job Search: Find US Jobs, Internships, Jobs Near Me 64 of job seekers get hired through a referral. Use LinkedIn Jobs to boost your chances of getting hired through people you know.',
+    'Entertainment | CNN View entertainment news and videos for the latest movie, music, TV and celebrity headlines on CNN.com',
+    'Yahoo Entertainment Yahoo Entertainment is your source for the latest TV, movies, music, and celebrity news, including interviews, trailers, photos, and first looks.',
+    'Home - Research!America - A Research Advocacy Alliance Research!America is a non-profit research advocacy alliance that advocates for science, discovery, and innovation to achieve better health for all.',
+    'NSF Research Experiences for Undergraduates | NSF - National Science Foundation Offering research opportunities to undergraduates in the areas of science and engineering supported by the U.S. National Science Foundation.',
 ]
+
+
 
 doc_obj = [
-    {'title': 'Document 1', 'description': 'abstract page paper Document 1', 'domain': 'arxiv.org', 'summary': 'skip main gratefully acknowledge support author navigation instrumentation ultraviole...r contact accessibility operational status', 'url': 'abc1.com'},
-    {'title': 'Document 2', 'description': 'abstract page paper Document 2', 'domain': 'arxiv.org', 'summary': 'skip main gratefully acknowledge support author navigation instrumentation ultraviole...r contact accessibility operational status', 'url': 'abc2.com'},
-    {'title': 'Document 3', 'description': 'abstract page paper Document 3', 'domain': 'arxiv.org', 'summary': 'skip main gratefully acknowledge support author navigation instrumentation ultraviole...r contact accessibility operational status', 'url': 'abc3.com'}
-]
+        {
+            "title": "WNY Jobs - Local jobs for Buffalo NY - Official WNYJOBS site",
+            "description": "Job posts for Greater Buffalo, NY - Search Manufacturing, Nursing & Healthcare jobs, Human services jobs, Construction jobs in Buffalo",
+            "url": "https://www.wnyjobs.com/",
+            "domain": "www.wnyjobs.com"
+        },
+        {
+            "title": "Job Search: Millions of US Jobs (HIRING NOW) Near You - 2024",
+            "description": "Phil, your career advisor will help you find the right job opening from companies hiring in the US. Find job postings near you & 1-click apply to get hired.",
+            "domain": "www.ziprecruiter.com",
+            "url": "https://www.ziprecruiter.com/"
+        },
+        {
+            "title": "LinkedIn Job Search: Find US Jobs, Internships, Jobs Near Me",
+            "description": "64% of job seekers get hired through a referral. Use LinkedIn Jobs to boost your chances of getting hired through people you know.",
+            "domain": "www.linkedin.com",
+            "url": "https://www.linkedin.com/jobs"
+        },
+        {
+            "title": "Entertainment | CNN",
+            "description": "View entertainment news and videos for the latest movie, music, TV and celebrity headlines on CNN.com",
+            "domain": "www.cnn.com",
+            "url": "https://www.cnn.com/entertainment"
+        },
+        {
+            "title": "Yahoo Entertainment",
+            "description": "Yahoo Entertainment is your source for the latest TV, movies, music, and celebrity news, including interviews, trailers, photos, and first looks.",
+            "domain": "www.yahoo.com",
+            "url": "https://www.yahoo.com/entertainment/"
+        },
+        {
+            "title": "Home - Research!America - A Research Advocacy Alliance",
+            "description": "Research!America is a non-profit research advocacy alliance that advocates for science, discovery, and innovation to achieve better health for all.",
+            "domain": "www.researchamerica.org",
+            "url": "https://www.researchamerica.org/"
+        },
+        {
+            "title": "NSF Research Experiences for Undergraduates | NSF - National Science Foundation",
+            "description": "Offering research opportunities to undergraduates in the areas of science and engineering supported by the U.S. National Science Foundation.",
+            "domain": "new.nsf.gov",
+            "url": "https://new.nsf.gov/funding/initiatives/reu"
+        }
+    ]
 
-def dynamic_clustering(embeddings, eps=0.3, min_samples=1):
-    embeddings_normalized = embeddings / np.linalg.norm(embeddings, axis=1, keepdims=True)
+def dynamic_clustering(embeddings, eps=0.8, min_samples=2):
     dbscan = DBSCAN(eps=eps, min_samples=min_samples, metric='cosine')
-    labels = dbscan.fit_predict(embeddings_normalized)
+    labels = dbscan.fit_predict(embeddings)
     print(labels)
     return labels
 
@@ -43,10 +87,10 @@ def update_clustering(updated_embeddings, labels):
 model = SentenceTransformer('all-MiniLM-L6-v2')
 embeddings = model.encode(existing_documents)
 labels = dynamic_clustering(embeddings)
-cluster_summaries = {0: 'sample'}
+cluster_summaries = {}
 
 def addUrl(url):
-    global embeddings, labels, existing_documents, doc_obj, tsne
+    global embeddings, labels, existing_documents, doc_obj
     new_doc_str, new_doc = createDoc(url)
     existing_documents.append(new_doc_str)
     doc_obj.append(new_doc)
@@ -54,10 +98,11 @@ def addUrl(url):
     print(f"New document assigned to cluster: {assigned_cluster}")
 
     # Update clustering with the new document
-    embeddings = np.vstack([embeddings, new_embedding])
-    labels = update_clustering(embeddings, labels)
-    print(f"Updated cluster labels: {labels}")
-    assigned_cluster = labels[-1]
+    # embeddings = np.vstack([embeddings, new_embedding])
+    # labels = update_clustering(embeddings, labels)
+    # print(f"Updated cluster labels: {labels}")
+    # assigned_cluster = labels[-1]
+    labels = np.append(labels, assigned_cluster)
 
     # Print cluster information
     unique_labels = set(labels)
@@ -87,9 +132,7 @@ def getClusters():
 
 if __name__ == "__main__":
 
-    url = "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2"
-    url = "https://www.linkedin.com/posts/marcelobarrosinternational_international-students-keep-your-chin-up-activity-7260737361259511809-1DmE?utm_source=share&utm_medium=member_desktop"
-    url = "https://arxiv.org/abs/2411.04164"
+    url = "https://www.nhcc.edu/academics/library/doing-library-research/basic-steps-research-process"
     out = addUrl(url)
     print(out)
     getClusters()

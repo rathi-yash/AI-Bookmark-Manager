@@ -6,13 +6,6 @@ from indexer import addUrl, getClusters
 import json
 from flask import Flask, request, Response
 from flask_cors import CORS
-import nltk
-
-nltk.download('wordnet')
-nltk.download('punkt')
-nltk.download('punkt_tab')
-nltk.download('words')
-nltk.download('stopwords')
 
 app = Flask(__name__)
 CORS(app)
